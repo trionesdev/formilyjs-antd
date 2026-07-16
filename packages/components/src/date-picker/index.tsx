@@ -13,6 +13,10 @@ type DatePickerProps<PickerProps> = Exclude<
   onChange: (value: string | string[]) => void
 }
 
+type ComposedDatePicker = typeof AntdDatePicker & {
+  RangePicker?: typeof AntdDatePicker.RangePicker
+}
+
 const mapDateFormat = function () {
   const getDefaultFormat = (props: DatePickerProps<AntdDatePickerProps>) => {
     if (props['picker'] === 'month') {
@@ -46,14 +50,19 @@ const InternalDatePicker = connect(
   AntdDatePicker,
   mapProps(mapDateFormat()),
   mapReadPretty(PreviewText.DatePicker)
-)
+) as unknown as typeof AntdDatePicker
+
 const RangePicker = connect(
   AntdDatePicker.RangePicker,
   mapProps(mapDateFormat()),
   mapReadPretty(PreviewText.DateRangePicker)
+) as unknown as typeof AntdDatePicker.RangePicker
+
+export const DatePicker: ComposedDatePicker = Object.assign(
+  InternalDatePicker,
+  {
+    RangePicker,
+  }
 )
-export const DatePicker = Object.assign(InternalDatePicker, {
-  RangePicker,
-})
 
 export default DatePicker

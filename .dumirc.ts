@@ -11,7 +11,6 @@ export default defineConfig({
   favicons: [
     '//img.alicdn.com/imgextra/i3/O1CN01XtT3Tv1Wd1b5hNVKy_!!6000000002810-55-tps-360-360.svg',
   ],
-  // 与现有文档约定一致：无后缀 .md 为默认语言英文，.zh-CN.md 为中文
   locales: [
     { id: 'en-US', name: 'English' },
     { id: 'zh-CN', name: '中文' },
@@ -22,12 +21,11 @@ export default defineConfig({
   alias,
   themeConfig: {
     name: 'Formily Antd',
-    logo:
-      '//img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg',
+    logo: '//img.alicdn.com/imgextra/i2/O1CN01Kq3OHU1fph6LGqjIz_!!6000000004056-55-tps-1141-150.svg',
     nav: {
       'en-US': [
         {
-          title: 'Ant Design 6',
+          title: 'Ant Design',
           link: '/components',
         },
         {
@@ -41,7 +39,7 @@ export default defineConfig({
       ],
       'zh-CN': [
         {
-          title: 'Ant Design 6',
+          title: 'Ant Design',
           link: '/zh-CN/components',
         },
         {

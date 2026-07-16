@@ -8,10 +8,8 @@ import dayjs from 'dayjs'
 import { PreviewText } from '../preview-text'
 import { dayjsable, formatDayjsValue } from '../__builtins__'
 
-type ComposedTimePicker = React.FC<
-  React.PropsWithChildren<AntdTimePickerProps>
-> & {
-  RangePicker?: React.FC<React.PropsWithChildren<TimeRangePickerProps>>
+type ComposedTimePicker = typeof AntdTimePicker & {
+  RangePicker?: typeof AntdTimePicker.RangePicker
 }
 
 const mapTimeFormat = function () {
@@ -31,18 +29,25 @@ const mapTimeFormat = function () {
   }
 }
 
-const InternalTimePicker: ComposedTimePicker = connect(
+const InternalTimePicker = connect(
   AntdTimePicker,
   mapProps(mapTimeFormat()),
   mapReadPretty(PreviewText.TimePicker)
-)
+) as unknown as typeof AntdTimePicker
 
 const RangePicker = connect(
   AntdTimePicker.RangePicker,
   mapProps(mapTimeFormat()),
   mapReadPretty(PreviewText.TimeRangePicker)
+) as unknown as typeof AntdTimePicker.RangePicker
+
+export const TimePicker: ComposedTimePicker = Object.assign(
+  InternalTimePicker,
+  {
+    RangePicker,
+  }
 )
 
-export const TimePicker = Object.assign(InternalTimePicker, { RangePicker })
+export type { AntdTimePickerProps, TimeRangePickerProps }
 
 export default TimePicker

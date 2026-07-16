@@ -1,0 +1,42 @@
+diff --git a/dist/rollup-plugin-typescript2.cjs.js b/dist/rollup-plugin-typescript2.cjs.js
+index 25216722f1a6a073bee3780f2985e22428e3b6fe..be66b0b2f10b5ffe560c7cc224e764ba03346f2e 100644
+--- a/dist/rollup-plugin-typescript2.cjs.js
++++ b/dist/rollup-plugin-typescript2.cjs.js
+@@ -27981,13 +27981,13 @@ const typescript = (options) => {
+         cache === null || cache === void 0 ? void 0 : cache.done(); // if there's an initialization error in `buildStart`, such as a `tsconfig` error, the cache may not exist yet
+     };
+     const pluginOptions = Object.assign({}, {
+-        check: true,
++        check: false,
+         verbosity: VerbosityLevel.Warning,
+         clean: false,
+         cacheRoot: findCacheDir({ name: "rollup-plugin-typescript2" }),
+-        include: ["*.ts+(|x)", "**/*.ts+(|x)"],
++        include: ["**/*.ts", "**/*.tsx"],
+         exclude: ["*.d.ts", "**/*.d.ts"],
+-        abortOnError: true,
++        abortOnError: false,
+         rollupCommonJSResolveHack: false,
+         tsconfig: undefined,
+         useTsconfigDeclarationDir: false,
+diff --git a/dist/rollup-plugin-typescript2.es.js b/dist/rollup-plugin-typescript2.es.js
+index bf66881200a4ac275bc53c5f5c547472d0f59dc6..62a67e5ba358cf6347b59bff8c5abfa1b7552140 100644
+--- a/dist/rollup-plugin-typescript2.es.js
++++ b/dist/rollup-plugin-typescript2.es.js
+@@ -27952,13 +27952,13 @@ const typescript = (options) => {
+         cache === null || cache === void 0 ? void 0 : cache.done(); // if there's an initialization error in `buildStart`, such as a `tsconfig` error, the cache may not exist yet
+     };
+     const pluginOptions = Object.assign({}, {
+-        check: true,
++        check: false,
+         verbosity: VerbosityLevel.Warning,
+         clean: false,
+         cacheRoot: findCacheDir({ name: "rollup-plugin-typescript2" }),
+-        include: ["*.ts+(|x)", "**/*.ts+(|x)"],
++        include: ["**/*.ts", "**/*.tsx"],
+         exclude: ["*.d.ts", "**/*.d.ts"],
+-        abortOnError: true,
++        abortOnError: false,
+         rollupCommonJSResolveHack: false,
+         tsconfig: undefined,
+         useTsconfigDeclarationDir: false,

@@ -360,7 +360,7 @@ const InternalSelectTable: ReactFC<ISelectTableProps> = observer((props) => {
                   : {
                       renderCell: (checked, record, index, originNode) => {
                         return React.cloneElement(
-                          originNode as React.ReactElement,
+                          originNode as React.ReactElement<any>,
                           {
                             indeterminate: getIndeterminate(
                               record,

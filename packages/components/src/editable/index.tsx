@@ -57,7 +57,7 @@ const InternalEditable: ReactFC<IFormItemProps> = observer((props) => {
   const basePrefixCls = usePrefixCls()
   const prefixCls = usePrefixCls('formily-editable')
   const [wrapSSR, hashId] = useStyle(prefixCls)
-  const ref = useRef<boolean>()
+  const ref = useRef<boolean>(false)
   const innerRef = useRef<HTMLDivElement>(null)
   const recover = () => {
     if (ref.current && !field?.errors?.length) {

@@ -1,6 +1,6 @@
 {
   "version": "1.2.4",
-  "npmClient": "yarn",
+  "npmClient": "pnpm",
   "useWorkspaces": true,
   "npmClientArgs": ["--ignore-engines"],
   "command": {

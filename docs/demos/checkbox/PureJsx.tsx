@@ -1,4 +1,9 @@
-import { Checkbox, FormButtonGroup, FormItem, Submit } from '@formily/antd-v5'
+import {
+  Checkbox,
+  FormButtonGroup,
+  FormItem,
+  Submit,
+} from '@trionesdev/formily-antd'
 import {
   createForm,
   Field as FieldType,

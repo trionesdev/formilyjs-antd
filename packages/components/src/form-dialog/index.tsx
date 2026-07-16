@@ -49,9 +49,13 @@ export interface IFormDialog {
   close(): void
 }
 
-export interface IModalProps extends ModalProps {
-  onOk?: (event: React.MouseEvent<HTMLElement>) => void | boolean
-  onCancel?: (event: React.MouseEvent<HTMLElement>) => void | boolean
+export interface IModalProps extends Omit<ModalProps, 'onOk' | 'onCancel'> {
+  onOk?: (event: React.MouseEvent<HTMLButtonElement>) => void | boolean
+  onCancel?: (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.KeyboardEvent<HTMLElement>
+  ) => void | boolean
   loadingText?: React.ReactNode
 }
 
@@ -207,7 +211,7 @@ export function FormDialog(title: any, id: any, renderer?: any): IFormDialog {
 const DialogFooter: ReactFC = (props) => {
   const ref = useRef<HTMLDivElement>(null)
   const [footer, setFooter] = useState<HTMLDivElement>()
-  const footerRef = useRef<HTMLDivElement>()
+  const footerRef = useRef<HTMLDivElement | null>(null)
   const prefixCls = usePrefixCls('modal')
   useLayoutEffect(() => {
     const content = ref.current?.closest(`.${prefixCls}-content`)
@@ -226,7 +230,7 @@ const DialogFooter: ReactFC = (props) => {
     }
   })
 
-  footerRef.current = footer
+  footerRef.current = footer ?? null
 
   return (
     <div ref={ref} style={{ display: 'none' }}>

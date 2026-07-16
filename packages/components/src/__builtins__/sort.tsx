@@ -56,13 +56,18 @@ export function SortableContainer<T extends React.HTMLAttributes<HTMLElement>>(
   }
 }
 
-export const useSortableItem = () => {
-  return useContext(SortableItemContext)
-}
+export type SortableItemContextValue = Pick<
+  ReturnType<typeof useSortable>,
+  'attributes' | 'listeners'
+>
 
 export const SortableItemContext = createContext<
-  Partial<ReturnType<typeof useSortable>>
+  Partial<SortableItemContextValue>
 >({})
+
+export const useSortableItem = (): Partial<SortableItemContextValue> => {
+  return useContext(SortableItemContext)
+}
 
 export interface ISortableElementProps {
   index?: number
@@ -127,11 +132,13 @@ export function SortableElement<T extends React.HTMLAttributes<HTMLElement>>(
 
     return (
       <SortableItemContext.Provider value={sortable}>
-        {Component({
-          ...props,
-          style,
-          ref: setNodeRef,
-        } as unknown as T)}
+        {
+          Component({
+            ...props,
+            style,
+            ref: setNodeRef,
+          } as unknown as T) as React.ReactNode
+        }
       </SortableItemContext.Provider>
     )
   }

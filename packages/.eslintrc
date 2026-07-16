@@ -8,7 +8,7 @@
   "env": {
     "node": true
   },
-  "plugins": ["@typescript-eslint", "react", "prettier", "markdown"],
+  "plugins": ["@typescript-eslint", "react", "prettier"],
   "parserOptions": {
     "sourceType": "module",
     "ecmaVersion": 10,
@@ -59,30 +59,5 @@
     "no-var": 1,
     "prefer-rest-params": 0
   },
-  "overrides": [
-    {
-      "files": ["**/*.md.{jsx,tsx}"],
-      "processor": "markdown/markdown"
-    },
-    {
-      "files": ["**/*.md/*.{jsx,tsx}"],
-      "rules": {
-        "@typescript-eslint/no-unused-vars": "error",
-        "no-unused-vars": "error",
-        "no-console": "off",
-        "react/display-name": "off",
-        "react/prop-types": "off"
-      }
-    },
-    {
-      "files": ["**/*.md/*.{js,ts}"],
-      "rules": {
-        "@typescript-eslint/no-unused-vars": "off",
-        "no-unused-vars": "off",
-        "no-console": "off",
-        "react/display-name": "off",
-        "react/prop-types": "off"
-      }
-    }
-  ]
+  "overrides": []
 }

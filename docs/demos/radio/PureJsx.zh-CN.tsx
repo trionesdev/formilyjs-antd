@@ -1,4 +1,9 @@
-import { FormButtonGroup, FormItem, Radio, Submit } from '@formily/antd-v5'
+import {
+  FormButtonGroup,
+  FormItem,
+  Radio,
+  Submit,
+} from '@trionesdev/formily-antd'
 import { createForm } from '@formily/core'
 import { Field, FormProvider } from '@formily/react'
 import React from 'react'

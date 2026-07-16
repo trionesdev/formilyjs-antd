@@ -8,11 +8,12 @@ import {
   useFieldSchema,
 } from '@formily/react'
 import { action, define, markRaw, model, observable } from '@formily/reactive'
-import { Steps } from 'antd'
-import { StepProps, StepsProps } from 'antd/lib/steps'
+import { Steps, type StepsProps } from 'antd'
 import cls from 'classnames'
 import React, { Fragment } from 'react'
 import { usePrefixCls } from '../__builtins__'
+
+type StepProps = NonNullable<StepsProps['items']>[number]
 
 export interface IFormStep {
   connect: (steps: SchemaStep[], field: VoidField) => void
@@ -148,11 +149,8 @@ export const FormStep = connect(
           {...props}
           style={{ marginBottom: 10, ...props.style }}
           current={current}
-        >
-          {steps.map(({ props }, key) => {
-            return <Steps.Step {...props} key={key} />
-          })}
-        </Steps>
+          items={steps.map(({ props }) => props)}
+        />
         {steps.map(({ name, schema }, key) => {
           if (key !== current) return
           return <RecursionField key={key} name={name} schema={schema} />

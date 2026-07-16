@@ -12,5 +12,6 @@ packages/vue
 packages/element
 esm
 doc-site
+.dumi
 public
 package

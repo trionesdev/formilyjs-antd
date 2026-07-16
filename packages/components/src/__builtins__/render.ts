@@ -6,24 +6,31 @@ import type { Root } from 'react-dom/client'
 
 type CreateRoot = (container: ContainerType) => Root
 
-// Let compiler not to search module usage
-const fullClone = {
-  ...ReactDOM,
-} as typeof ReactDOM & {
+type LegacyReactDOM = typeof ReactDOM & {
+  version?: string
+  render?: (node: ReactElement, container: ContainerType) => void
+  unmountComponentAtNode?: (container: ContainerType) => boolean
+  createRoot?: CreateRoot
   __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED?: {
     usingClientEntryPoint?: boolean
   }
-  createRoot?: CreateRoot
 }
+
+// Let compiler not to search module usage
+const fullClone = {
+  ...ReactDOM,
+} as LegacyReactDOM
 
 const { version, render: reactRender, unmountComponentAtNode } = fullClone
 
-let createRoot: CreateRoot
+let createRoot: CreateRoot | undefined
 try {
   const mainVersion = Number((version || '').split('.')[0])
-  if (mainVersion >= 18 && fullClone.createRoot) {
+  if (mainVersion >= 18) {
+    // Prefer the dedicated client entry for React 18+
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    createRoot = fullClone.createRoot
+    const client = require('react-dom/client') as { createRoot: CreateRoot }
+    createRoot = fullClone.createRoot || client.createRoot
   }
 } catch (e) {
   // Do nothing;
@@ -49,10 +56,11 @@ type ContainerType = (Element | DocumentFragment) & {
 }
 
 function legacyRender(node: ReactElement, container: ContainerType) {
-  reactRender(node, container)
+  reactRender?.(node, container)
 }
 
 function concurrentRender(node: ReactElement, container: ContainerType) {
+  if (!createRoot) return
   toggleWarning(true)
   const root = container[MARK] || createRoot(container)
   toggleWarning(false)
@@ -61,7 +69,7 @@ function concurrentRender(node: ReactElement, container: ContainerType) {
 }
 
 export function render(node: ReactElement, container: ContainerType) {
-  if (createRoot as unknown) {
+  if (createRoot) {
     concurrentRender(node, container)
     return
   }
@@ -70,7 +78,7 @@ export function render(node: ReactElement, container: ContainerType) {
 
 // ========================== Unmount =========================
 function legacyUnmount(container: ContainerType) {
-  return unmountComponentAtNode(container)
+  return unmountComponentAtNode?.(container)
 }
 
 async function concurrentUnmount(container: ContainerType) {
@@ -82,7 +90,7 @@ async function concurrentUnmount(container: ContainerType) {
 }
 
 export function unmount(container: ContainerType) {
-  if (createRoot as unknown) {
+  if (createRoot) {
     return concurrentUnmount(container)
   }
 

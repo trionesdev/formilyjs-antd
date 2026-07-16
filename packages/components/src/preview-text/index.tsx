@@ -340,7 +340,19 @@ const InternalPreviewText: ReactFC<IPreviewTextProps> = observer(
   }
 )
 
-export const PreviewText = Object.assign(InternalPreviewText, {
+export const PreviewText: typeof InternalPreviewText & {
+  Input: typeof Input
+  Select: typeof Select
+  TreeSelect: typeof TreeSelect
+  Cascader: typeof Cascader
+  DatePicker: typeof DatePicker
+  DateRangePicker: typeof DateRangePicker
+  TimePicker: typeof TimePicker
+  TimeRangePicker: typeof TimeRangePicker
+  Placeholder: typeof Placeholder
+  usePlaceholder: typeof usePlaceholder
+  NumberPicker: typeof NumberPicker
+} = Object.assign(InternalPreviewText, {
   Input,
   Select,
   TreeSelect,

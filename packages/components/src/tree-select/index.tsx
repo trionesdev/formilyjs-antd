@@ -4,7 +4,7 @@ import { TreeSelect as AntdTreeSelect } from 'antd'
 import React from 'react'
 import { PreviewText } from '../preview-text'
 
-export const TreeSelect = connect(
+export const TreeSelect: typeof AntdTreeSelect = connect(
   AntdTreeSelect,
   mapProps(
     {
@@ -23,6 +23,6 @@ export const TreeSelect = connect(
     }
   ),
   mapReadPretty(PreviewText.TreeSelect)
-)
+) as unknown as typeof AntdTreeSelect
 
 export default TreeSelect
