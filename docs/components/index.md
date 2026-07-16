@@ -2,7 +2,7 @@
 
 ## Introduction
 
-@trionesdev/formily-antd is a professional component library for form scenarios based on Ant Design V5 encapsulation. It has the following characteristics:
+@trionesdev/formily-antd is a professional component library for form scenarios based on Ant Design V6 encapsulation. It has the following characteristics:
 
 - Only Formily 2.x is supported
   - Most components are not backward compatible
