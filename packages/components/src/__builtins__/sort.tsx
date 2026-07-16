@@ -1,9 +1,5 @@
-import { DndContext, DragEndEvent, DragStartEvent } from '@dnd-kit/core'
-import {
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
+import { DragDropProvider, DragEndEvent, DragStartEvent } from '@dnd-kit/react'
+import { isSortable, useSortable } from '@dnd-kit/react/sortable'
 import { ReactFC } from '@formily/reactive-react'
 import React, { createContext, useContext, useMemo } from 'react'
 
@@ -13,26 +9,22 @@ export interface ISortableContainerProps {
   accessibility?: {
     container?: Element
   }
-  onSortStart?: (event: DragStartEvent) => void
+  onSortStart?: (event: {
+    active: { id: string | number }
+    raw: DragStartEvent
+  }) => void
   onSortEnd?: (event: { oldIndex: number; newIndex: number }) => void
 }
 
 export function SortableContainer<T extends React.HTMLAttributes<HTMLElement>>(
-  Component: ReactFC<T>
+  Component: ReactFC<T>,
 ): ReactFC<ISortableContainerProps & T> {
-  return ({
-    list,
-    start = 0,
-    accessibility,
-    onSortStart,
-    onSortEnd,
-    ...props
-  }) => {
+  return ({ list, onSortStart, onSortEnd, ...props }) => {
     const _onSortEnd = (event: DragEndEvent) => {
-      const { active, over } = event
-      if (!over) return
-      const oldIndex = +active.id - 1
-      const newIndex = +over.id - 1
+      const source = event.operation.source
+      if (!isSortable(source)) return
+      const oldIndex = source.initialIndex
+      const newIndex = source.index
       onSortEnd?.({
         oldIndex,
         newIndex,
@@ -40,25 +32,27 @@ export function SortableContainer<T extends React.HTMLAttributes<HTMLElement>>(
     }
 
     return (
-      <DndContext
-        accessibility={accessibility}
-        onDragStart={onSortStart}
+      <DragDropProvider
+        onDragStart={(event) => {
+          if (!event.operation.source) return
+          onSortStart?.({
+            active: {
+              id: event.operation.source.id,
+            },
+            raw: event,
+          })
+        }}
         onDragEnd={_onSortEnd}
       >
-        <SortableContext
-          items={list.map((_, index) => index + start + 1)}
-          strategy={verticalListSortingStrategy}
-        >
-          <Component {...(props as unknown as T)}>{props.children}</Component>
-        </SortableContext>
-      </DndContext>
+        <Component {...(props as unknown as T)}>{props.children}</Component>
+      </DragDropProvider>
     )
   }
 }
 
 export type SortableItemContextValue = Pick<
   ReturnType<typeof useSortable>,
-  'attributes' | 'listeners'
+  'handleRef'
 >
 
 export const SortableItemContext = createContext<
@@ -75,45 +69,23 @@ export interface ISortableElementProps {
 }
 
 export function SortableElement<T extends React.HTMLAttributes<HTMLElement>>(
-  Component: ReactFC<T>
+  Component: ReactFC<T>,
 ): ReactFC<T & ISortableElementProps> {
   return ({ index = 0, lockAxis, ...props }) => {
     const sortable = useSortable({
       id: index + 1,
+      index,
     })
-    const { setNodeRef, transform, transition, isDragging } = sortable
-    if (transform) {
-      switch (lockAxis) {
-        case 'x':
-          transform.y = 0
-          break
-        case 'y':
-          transform.x = 0
-          break
-
-        default:
-          break
-      }
-    }
+    const { ref, isDragging } = sortable
 
     const style = useMemo(() => {
-      const zIndex = transform ? 1 : 'none'
-      const position = transform ? 'relative' : 'unset'
       const itemStyle: React.CSSProperties = {
-        position,
+        position: isDragging ? 'relative' : 'unset',
         touchAction: 'none',
-        zIndex,
-        transform: transform
-          ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-          : 'none',
-        transition: `${transform ? 'all 200ms ease' : ''}`,
+        zIndex: isDragging ? 1 : 'none',
       }
       const dragStyle = {
-        transition,
         opacity: '0.8',
-        transform: `translate3d(${transform?.x || 0}px, ${
-          transform?.y || 0
-        }px, 0)`,
       }
 
       const computedStyle = isDragging
@@ -128,7 +100,7 @@ export function SortableElement<T extends React.HTMLAttributes<HTMLElement>>(
           }
 
       return computedStyle
-    }, [isDragging, transform, transition, props.style])
+    }, [isDragging, props.style, lockAxis])
 
     return (
       <SortableItemContext.Provider value={sortable}>
@@ -136,7 +108,7 @@ export function SortableElement<T extends React.HTMLAttributes<HTMLElement>>(
           Component({
             ...props,
             style,
-            ref: setNodeRef,
+            ref,
           } as unknown as T) as React.ReactNode
         }
       </SortableItemContext.Provider>
@@ -145,10 +117,10 @@ export function SortableElement<T extends React.HTMLAttributes<HTMLElement>>(
 }
 
 export function SortableHandle<T extends React.HTMLAttributes<HTMLElement>>(
-  Component: ReactFC<T>
+  Component: ReactFC<T>,
 ): ReactFC<T> {
   return (props: T) => {
-    const { attributes, listeners } = useSortableItem()
-    return <Component {...props} {...attributes} {...listeners} />
+    const { handleRef } = useSortableItem()
+    return <Component {...props} ref={handleRef as any} />
   }
 }
